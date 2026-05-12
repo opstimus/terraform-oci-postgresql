@@ -1,27 +1,8 @@
-resource "oci_kms_vault" "main" {
-  compartment_id = var.compartment_id
-  display_name   = "${var.project}-${var.environment}-${var.name}"
-  vault_type     = "DEFAULT"
-  freeform_tags  = var.tags
-}
-
-resource "oci_kms_key" "main" {
-  compartment_id      = var.compartment_id
-  display_name        = "${var.project}-${var.environment}-${var.name}"
-  management_endpoint = oci_kms_vault.main.management_endpoint
-  vault_id            = oci_kms_vault.main.id
-  freeform_tags       = var.tags
-  key_shape {
-    algorithm = "AES"
-    length    = 32
-  }
-}
-
 resource "oci_vault_secret" "main" {
   compartment_id = var.compartment_id
-  key_id         = oci_kms_key.main.id
+  vault_id       = var.kms_vault_id
+  key_id         = var.kms_key_id
   secret_name    = "${var.project}-${var.environment}-${var.name}-db-password"
-  vault_id       = oci_kms_vault.main.id
   freeform_tags  = var.tags
 
   secret_content {

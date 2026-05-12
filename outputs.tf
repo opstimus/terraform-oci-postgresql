@@ -27,4 +27,3 @@ output "secret_id" {
   description = "The OCID of the vault secret containing the database password."
   value       = oci_vault_secret.main.id
 }
-

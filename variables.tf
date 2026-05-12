@@ -23,6 +23,16 @@ variable "vcn_id" {
   type        = string
 }
 
+variable "kms_vault_id" {
+  description = "The OCID of the KMS vault to use for storing the database password."
+  type        = string
+}
+
+variable "kms_key_id" {
+  description = "The OCID of the KMS key to use for encrypting the database password."
+  type        = string
+}
+
 variable "db_version" {
   description = "The version of the database."
   type        = string
