@@ -23,6 +23,11 @@ variable "vcn_id" {
   type        = string
 }
 
+variable "allowed_cidrs" {
+  description = "List of CIDR blocks permitted to reach the PostgreSQL cluster on port 5432. Pass your application-tier subnet CIDRs."
+  type        = list(string)
+}
+
 variable "kms_vault_id" {
   description = "The OCID of the KMS vault to use for storing the database password."
   type        = string

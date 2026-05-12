@@ -24,6 +24,35 @@ resource "oci_core_network_security_group" "main" {
   freeform_tags  = var.tags
 }
 
+resource "oci_core_network_security_group_security_rule" "pgsql_ingress" {
+  for_each                  = toset(var.allowed_cidrs)
+  network_security_group_id = oci_core_network_security_group.main.id
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = each.value
+  source_type               = "CIDR_BLOCK"
+  tcp_options {
+    destination_port_range {
+      min = 5432
+      max = 5432
+    }
+  }
+}
+
+resource "oci_core_network_security_group_security_rule" "pgsql_egress" {
+  network_security_group_id = oci_core_network_security_group.main.id
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = "0.0.0.0/0"
+  destination_type          = "CIDR_BLOCK"
+  tcp_options {
+    destination_port_range {
+      min = 1024
+      max = 65535
+    }
+  }
+}
+
 
 resource "oci_psql_db_system" "main" {
   compartment_id              = var.compartment_id
