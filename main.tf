@@ -6,8 +6,8 @@ resource "oci_vault_secret" "main" {
   freeform_tags  = var.tags
 
   secret_content {
-    content_type = "TEXT"
-    content      = random_password.main.result
+    content_type = "BASE64"
+    content      = base64encode(random_password.main.result)
   }
 }
 
@@ -80,7 +80,8 @@ resource "oci_psql_db_system" "main" {
   }
 
   storage_details {
-    is_regionally_durable = true
+    availability_domain   = var.availability_domain
+    is_regionally_durable = var.availability_domain == null ? true : null
     system_type           = "OCI_OPTIMIZED_STORAGE"
     iops                  = var.storage_iops
   }

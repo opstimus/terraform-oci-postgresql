@@ -69,6 +69,11 @@ variable "is_reader_endpoint_enabled" {
   default     = false
 }
 
+variable "availability_domain" {
+  description = "The availability domain to create the database system in. If not specified, the database system will be created as a regional resource with high availability across availability domains."
+  type        = string
+}
+
 variable "storage_iops" {
   description = "The number of IOPS to provision for the database system's storage."
   type        = number
