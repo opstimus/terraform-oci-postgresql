@@ -81,7 +81,7 @@ resource "oci_psql_db_system" "main" {
 
   storage_details {
     availability_domain   = var.availability_domain
-    is_regionally_durable = var.availability_domain == null ? true : null
+    is_regionally_durable = var.availability_domain == null ? true : false
     system_type           = "OCI_OPTIMIZED_STORAGE"
     iops                  = var.storage_iops
   }
