@@ -101,8 +101,29 @@ resource "oci_psql_db_system" "main" {
     backup_id   = var.db_source_type == "BACKUP" ? var.db_backup_id : null
   }
 
+  lifecycle {
+    ignore_changes = [instance_count] # let null_resource handle scaling
+  }
 }
 
 data "oci_psql_db_system_connection_detail" "main" {
   db_system_id = oci_psql_db_system.main.id
+}
+
+resource "null_resource" "psql_scale" {
+  # Triggers re-run whenever instance_count changes
+  triggers = {
+    instance_count = var.instance_count
+    db_system_id   = oci_psql_db_system.main.id
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      bash ${path.module}/psql-scale.sh \
+        ${oci_psql_db_system.main.id} \
+        ${var.instance_count}
+    EOT
+  }
+
+  depends_on = [oci_psql_db_system.main]
 }
